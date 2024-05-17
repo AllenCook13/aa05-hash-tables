@@ -84,39 +84,17 @@ class HashTable { // get O(1), set O(1), deleteKey O(1)
 
 
   delete(key) {
-      const idx = this.hashMod(key);
-
-      if (this.data[idx]) {
-        // curr = the head of that bucket
-        let cur = this.data[idx];
-        let prev = null;
-
-        while (cur) {
-          if (cur.key === key) {
-            // If it's the first node in the linked list
-            if (prev === null) {
-                // curr   curr.next   curr
-              // [2|]=>  [4|]=>  [6|]=>
-              this.data[idx] = cur.next;
-            } else {
-               // prev   curr     curr.next
-              // [2|]=>  [4|]=>  [6|]=>
-              prev.next = cur.next;
-            }
-            this.count--;
-            return true; // Key successfully deleted
-          }
-          prev = cur;
-          cur = cur.next;
-        }
-      }
-      return "Key not found"; // Key not found
+    if(this.read(key) === undefined) {
+      return "Key not found"
+    } else {
+      this.insert(key, undefined);
+      this.count--;
+    }
   }
 }
 
 
-
-
+//alternate insert solution
 
  // let idx = this.hashMod(key);
     // let newPair = new KeyValuePair(key, value);
@@ -138,4 +116,6 @@ class HashTable { // get O(1), set O(1), deleteKey O(1)
     // }
     // this.count++;
 
+
+   
 module.exports = HashTable;
