@@ -11,7 +11,7 @@ class HashTable { // get O(1), set O(1), deleteKey O(1)
   constructor(numBuckets = 8) {
     this.count = 0;
     this.capacity = numBuckets;
-    this.data = new Array(this.capacity).fill(null); 
+    this.data = new Array(this.capacity).fill(null);
   }
 
   hash(key) {
@@ -42,7 +42,7 @@ class HashTable { // get O(1), set O(1), deleteKey O(1)
     if(cur) {
      cur.value = value;
     } else {
-      
+
      let newPair = new KeyValuePair(key, value);
      if(!this.data[idx]) {
        this.data[idx] = newPair;
@@ -84,29 +84,39 @@ class HashTable { // get O(1), set O(1), deleteKey O(1)
 
 
   delete(key) {
-    let string = "Key not found"
-    let idx = this.hashMod(key);
-      if(this.data[idx]) {
-        let cur = this.data[idx];
-        console.log(cur.value)
-        while(cur) {
-          if(cur.key === key) {
+      const idx = this.hashMod(key);
 
-            cur.value = undefined;
-            console.log(cur.value)
+      if (this.data[idx]) {
+        // curr = the head of that bucket
+        let cur = this.data[idx];
+        let prev = null;
+
+        while (cur) {
+          if (cur.key === key) {
+            // If it's the first node in the linked list
+            if (prev === null) {
+                // curr   curr.next   curr
+              // [2|]=>  [4|]=>  [6|]=>
+              this.data[idx] = cur.next;
+            } else {
+               // prev   curr     curr.next
+              // [2|]=>  [4|]=>  [6|]=>
+              prev.next = cur.next;
+            }
             this.count--;
-            return
+            return true; // Key successfully deleted
           }
+          prev = cur;
           cur = cur.next;
-          return string
         }
       }
+      return "Key not found"; // Key not found
   }
 }
 
 
 
-   
+
 
  // let idx = this.hashMod(key);
     // let newPair = new KeyValuePair(key, value);
@@ -127,5 +137,5 @@ class HashTable { // get O(1), set O(1), deleteKey O(1)
     //   this.data[idx] = newPair;
     // }
     // this.count++;
-   
+
 module.exports = HashTable;
