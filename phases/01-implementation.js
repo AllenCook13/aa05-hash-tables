@@ -9,8 +9,9 @@ class KeyValuePair {
 class HashTable { // get O(1), set O(1), deleteKey O(1)
 
   constructor(numBuckets = 8) {
-    // Initialize your buckets here
-    // Your code here 
+    this.count = 0;
+    this.capacity = numBuckets;
+    this.data = new Array(this.capacity).fill(null); 
   }
 
   hash(key) {
@@ -30,24 +31,101 @@ class HashTable { // get O(1), set O(1), deleteKey O(1)
 
 
   insert(key, value) {
-    // Your code here 
+    if(this.count / this.capacity > .7) {
+      this.resize();
+    }
+    let idx = this.hashMod(key);
+    let cur = this.data[idx];
+    while(cur && cur.key !== key) {
+      cur = cur.next;
+    }
+    if(cur) {
+     cur.value = value;
+    } else {
+      
+     let newPair = new KeyValuePair(key, value);
+     if(!this.data[idx]) {
+       this.data[idx] = newPair;
+     } else {
+       newPair.next = this.data[idx];
+       this.data[idx] = newPair;
+     }
+     this.count++
+    }
   }
 
 
   read(key) {
-    // Your code here 
+    let idx = this.hashMod(key);
+    let cur = this.data[idx];
+    while(cur && cur.key !== key) {
+      cur = cur.next;
+    }
+    if(cur) {
+      return cur.value
+    }
   }
 
 
   resize() {
-    // Your code here 
+    this.capacity *= 2
+    this.count = 0
+    let storArr = this.data
+    this.data = new Array(this.capacity).fill(null);
+    let pair = null;
+    for(let i = 0; i <= storArr.length; i++) {
+      pair = storArr[i];
+      while(pair) {
+        this.insert(pair.key, pair.value);
+        pair = pair.next;
+      }
+    }
   }
 
 
   delete(key) {
-    // Your code here 
+    let string = "Key not found"
+    let idx = this.hashMod(key);
+      if(this.data[idx]) {
+        let cur = this.data[idx];
+        console.log(cur.value)
+        while(cur) {
+          if(cur.key === key) {
+
+            cur.value = undefined;
+            console.log(cur.value)
+            this.count--;
+            return
+          }
+          cur = cur.next;
+          return string
+        }
+      }
   }
 }
 
 
+
+   
+
+ // let idx = this.hashMod(key);
+    // let newPair = new KeyValuePair(key, value);
+    // let cur = this.data[idx];
+
+    // while(cur) {
+    //   if(cur.key === key) {
+    //     cur.value = value;
+    //     return;
+    //   }
+    //   cur = cur.next;
+    // }
+
+    // newPair['next'] = this.data[idx];
+    // this.data[idx] = newPair;
+
+    // if(!this.data[idx]) {
+    //   this.data[idx] = newPair;
+    // }
+    // this.count++;
+   
 module.exports = HashTable;
